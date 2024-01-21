@@ -34,9 +34,7 @@ export const Card = ({ ...rest }) => {
 		<UICard {...rest} bg='#B6F1BB' maxW={220} minW={220} minH={200}>
 			<CardBody p={data ? 0 : 16}>
 				{data ? <Image src={downloadURL} roundedTop={6} /> : null}
-				<Link
-					to={!data ? "upload" : "results/" + encodeURIComponent(updatedUrl)}
-				>
+				<Link to={!data ? "upload" : "results/" + name}>
 					<Button
 						pos='absolute'
 						left={data ? 10 : 8}
@@ -54,7 +52,7 @@ export const Card = ({ ...rest }) => {
 			</CardBody>
 			{data ? (
 				<CardFooter display='flex' justify='center'>
-					<Link to={"upload/" + encodeURIComponent(downloadURL)}>
+					<Link to={"upload/" + name}>
 						<Button bg='#00210A' color='white' _hover={{ bg: "#005218" }}>
 							<Text fontWeight='bold'>EDIT RESULTS</Text>
 						</Button>

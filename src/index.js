@@ -19,11 +19,11 @@ const router = createBrowserRouter([
 				element: <Dashboard />,
 			},
 			{
-				path: "/upload/:url?",
+				path: "/upload/:name?",
 				element: <Upload />,
 			},
 			{
-				path: "/results/:url",
+				path: "/results/:name",
 				element: <Results />,
 			},
 			{

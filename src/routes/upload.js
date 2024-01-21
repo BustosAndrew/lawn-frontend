@@ -9,15 +9,25 @@ import {
 } from "@chakra-ui/react"
 import { EditIcon } from "@chakra-ui/icons"
 import { Form } from "../components/Form"
-import { useState } from "react"
+import { useState, useEffect, useContext } from "react"
 import { useParams } from "react-router-dom"
+import { getDownloadURL, ref } from "firebase/storage"
+import { FirebaseContext } from "../components/FirebaseProvider"
 
 export const Upload = () => {
 	const [selectedImage, setSelectedImage] = useState(null)
 	const [file, setFile] = useState(null)
-	const { url } = useParams()
-	const decodedUrl = decodeURIComponent(url)
-	console.log(url)
+	const [downloadURL, setDownloadURL] = useState("")
+	const { myStorage } = useContext(FirebaseContext)
+	const { name } = useParams()
+
+	useEffect(() => {
+		const loader = async (myStorage, name) => {
+			const url = await getDownloadURL(ref(myStorage, `/images/${name}`))
+			setDownloadURL(url)
+		}
+		if (name) loader(myStorage, name)
+	}, [name, myStorage])
 
 	const handleImageChange = (event) => {
 		const file = event.target.files[0]
@@ -64,7 +74,7 @@ export const Upload = () => {
 					{selectedImage && (
 						<Image
 							rounded={10}
-							src={decodedUrl || selectedImage}
+							src={downloadURL || selectedImage}
 							w='100%'
 							h='100%'
 							objectFit='cover'
