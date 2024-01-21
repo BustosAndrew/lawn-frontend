@@ -1,4 +1,4 @@
-import { Box, Stack, Heading, Flex } from "@chakra-ui/react"
+import { Box, Stack, Heading } from "@chakra-ui/react"
 import { Card } from "../components/Card"
 
 export const Dashboard = () => {
@@ -6,12 +6,9 @@ export const Dashboard = () => {
 		<Box m={4} maxW='4xl'>
 			<Stack>
 				<Heading size='3xl'>Your Photos</Heading>
-				<Stack direction={["column", "row"]} gap={10} wrap='wrap'>
-					<Card flexBasis={["100%", "calc(30.333% - 8px)"]} />
-					<Card flexBasis={["100%", "calc(30.333% - 8px)"]} />
-					<Card flexBasis={["100%", "calc(30.333% - 8px)"]} />
-					<Card flexBasis={["100%", "calc(30.333% - 8px)"]} />
-				</Stack>
+				<Box className='sm:grid sm:grid-cols-2 md:grid-cols-3 gap-10 flex flex-col m-auto md:m-0'>
+					<Card />
+				</Box>
 			</Stack>
 		</Box>
 	)

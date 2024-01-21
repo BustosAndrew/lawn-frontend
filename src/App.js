@@ -5,8 +5,9 @@ import { Outlet } from "react-router-dom"
 import { HamburgerIcon, CloseIcon } from "@chakra-ui/icons"
 
 export default function App() {
-	const { getButtonProps, getDisclosureProps, isOpen, onToggle } =
-		useDisclosure({ defaultIsOpen: true })
+	const { getButtonProps, getDisclosureProps, isOpen } = useDisclosure({
+		defaultIsOpen: true,
+	})
 	const [hidden, setHidden] = useState(!isOpen)
 
 	return (
