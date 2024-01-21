@@ -18,14 +18,17 @@ import {
 	Text,
 	Flex,
 } from "@chakra-ui/react"
-import { useState } from "react"
+import { useState, useContext } from "react"
+import { ref, getDownloadURL, uploadBytes } from "firebase/storage"
 import { ChevronDownIcon } from "@chakra-ui/icons"
+import { FirebaseContext } from "./FirebaseProvider"
 
-export const Form = () => {
+export const Form = ({ file }) => {
 	const [area, setArea] = useState(1)
 	const [features, setFeatures] = useState([])
 	const [optional, setOptional] = useState([])
 	const [formError, setFormError] = useState("")
+	const { myStorage } = useContext(FirebaseContext)
 
 	const handleOptionalChange = (e) => {
 		setOptional(e)
@@ -33,18 +36,25 @@ export const Form = () => {
 	const handleAreaChange = (e) => setArea(e)
 	const handleFeatureChange = (e) => setFeatures(e)
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e) => {
 		e.preventDefault()
+		console.log(file)
 
-		if (features.length === 0) {
+		if (features.length === 0 || !area || !file) {
 			setFormError("All fields are required.")
 			return
 		}
 
 		setFormError("")
-
-		// Handle form submission logic here
-		console.log("Form submitted successfully")
+		console.log(myStorage)
+		const imageRef = ref(myStorage, file.name)
+		try {
+			await uploadBytes(imageRef, file)
+			const url = await getDownloadURL(imageRef)
+			console.log(url)
+		} catch (e) {
+			console.log(e)
+		}
 	}
 
 	const handleError = (e) => {

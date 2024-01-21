@@ -13,12 +13,14 @@ import { useState } from "react"
 
 export const Upload = () => {
 	const [selectedImage, setSelectedImage] = useState(null)
+	const [file, setFile] = useState(null)
 
 	const handleImageChange = (event) => {
 		const file = event.target.files[0]
 
 		if (file) {
 			setSelectedImage(URL.createObjectURL(file))
+			setFile(file)
 		}
 	}
 
@@ -78,7 +80,7 @@ export const Upload = () => {
 				</Button>
 				<Stack gap={5}>
 					<Heading size='lg'>Lawn Details</Heading>
-					<Form />
+					<Form file={file} />
 				</Stack>
 			</Stack>
 		</Box>

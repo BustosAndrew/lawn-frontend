@@ -26,7 +26,7 @@ export const FirebaseProvider = (props) => {
 
 	useEffect(() => {
 		setFirebaseInitializing(false)
-	}, [myAuth, myFS, myStorage])
+	}, [myFS, myStorage])
 
 	if (firebaseInitializing) {
 		// return <h1>Loading</h1>
