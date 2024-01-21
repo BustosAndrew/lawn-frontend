@@ -9,10 +9,10 @@ import {
 } from "@chakra-ui/react"
 
 export const Card = ({ ...rest }) => {
-	const data = 1
+	const data = 0
 
 	return (
-		<UICard {...rest} bg='#B6F1BB' maxW={220} minH={190}>
+		<UICard {...rest} bg='#B6F1BB' maxW={220} minW={220} minH={200}>
 			<CardBody p={data ? 0 : 16}>
 				{data ? (
 					<Image src='https://bit.ly/dan-abramov' roundedTop={6} />
@@ -21,7 +21,7 @@ export const Card = ({ ...rest }) => {
 					<Button
 						pos='absolute'
 						left={data ? 10 : 8}
-						top={data ? "30%" : 16}
+						top={data ? "30%" : "37%"}
 						mx={0}
 						bg='#00210A'
 						color='white'
