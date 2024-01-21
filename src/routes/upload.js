@@ -10,10 +10,14 @@ import {
 import { EditIcon } from "@chakra-ui/icons"
 import { Form } from "../components/Form"
 import { useState } from "react"
+import { useParams } from "react-router-dom"
 
 export const Upload = () => {
 	const [selectedImage, setSelectedImage] = useState(null)
 	const [file, setFile] = useState(null)
+	const { url } = useParams()
+	const decodedUrl = decodeURIComponent(url)
+	console.log(url)
 
 	const handleImageChange = (event) => {
 		const file = event.target.files[0]
@@ -60,7 +64,7 @@ export const Upload = () => {
 					{selectedImage && (
 						<Image
 							rounded={10}
-							src={selectedImage}
+							src={decodedUrl || selectedImage}
 							w='100%'
 							h='100%'
 							objectFit='cover'

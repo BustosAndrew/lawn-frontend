@@ -15,21 +15,28 @@ export const Card = ({ ...rest }) => {
 	const data = rest.data
 	const { name } = data || ""
 	const [downloadURL, setDownloadURL] = useState("")
+	const [updatedUrl, setUpdatedUrl] = useState("")
 	const { myStorage } = useContext(FirebaseContext)
 
 	useEffect(() => {
 		const loader = async (myStorage, name) => {
 			const url = await getDownloadURL(ref(myStorage, `/images/${name}`))
 			setDownloadURL(url)
+			const updatedUrl = await getDownloadURL(
+				ref(myStorage, `/updated/${name}updated`)
+			)
+			setUpdatedUrl(updatedUrl)
 		}
 		if (data) loader(myStorage, name)
-	}, [data, name, myStorage])
+	}, [data, name, myStorage, updatedUrl])
 
 	return (
 		<UICard {...rest} bg='#B6F1BB' maxW={220} minW={220} minH={200}>
 			<CardBody p={data ? 0 : 16}>
 				{data ? <Image src={downloadURL} roundedTop={6} /> : null}
-				<Link to={!data ? "upload" : "results/" + downloadURL}>
+				<Link
+					to={!data ? "upload" : "results/" + encodeURIComponent(updatedUrl)}
+				>
 					<Button
 						pos='absolute'
 						left={data ? 10 : 8}
@@ -47,7 +54,7 @@ export const Card = ({ ...rest }) => {
 			</CardBody>
 			{data ? (
 				<CardFooter display='flex' justify='center'>
-					<Link to={"upload/" + downloadURL}>
+					<Link to={"upload/" + encodeURIComponent(downloadURL)}>
 						<Button bg='#00210A' color='white' _hover={{ bg: "#005218" }}>
 							<Text fontWeight='bold'>EDIT RESULTS</Text>
 						</Button>

@@ -17,6 +17,7 @@ export const Results = () => {
 	const [downloadURL, setDownloadURL] = useState("")
 	const { myStorage } = useContext(FirebaseContext)
 	const { url } = useParams()
+	const decodedUrl = decodeURIComponent(url)
 	console.log(url)
 
 	useEffect(() => {
@@ -30,23 +31,15 @@ export const Results = () => {
 			})
 		}, 500)
 
-		const loader = async (myStorage, url) => {
-			const downloadURL = await getDownloadURL(ref(myStorage, url + "updated"))
-			console.log(downloadURL)
-			setDownloadURL(downloadURL)
-		}
-
-		loader(myStorage, url)
-
 		// Clean up the interval when the component is unmounted
 		return () => clearInterval(intervalId)
-	}, [myStorage, url])
+	}, [])
 	return (
 		<Box m={4} maxW='4xl'>
 			<Stack gap={6}>
 				<Heading size='3xl'>Results</Heading>
 				<Image
-					src={downloadURL}
+					src={decodedUrl}
 					rounded={10}
 					w='100%'
 					objectFit='cover'
