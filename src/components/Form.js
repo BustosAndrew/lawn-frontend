@@ -9,25 +9,34 @@ import {
 	NumberIncrementStepper,
 	NumberDecrementStepper,
 	Input,
-	Select,
 	Button,
+	Menu,
+	MenuButton,
+	MenuList,
+	MenuItemOption,
+	MenuOptionGroup,
+	Text,
+	Flex,
 } from "@chakra-ui/react"
 import { useState } from "react"
+import { ChevronDownIcon } from "@chakra-ui/icons"
 
 export const Form = () => {
-	const [input, setInput] = useState("")
 	const [area, setArea] = useState(1)
-	const [country, setCountry] = useState("")
+	const [features, setFeatures] = useState([])
+	const [optional, setOptional] = useState([])
 	const [formError, setFormError] = useState("")
 
-	const handleInputChange = (e) => setInput(e.target.value)
+	const handleOptionalChange = (e) => {
+		setOptional(e)
+	}
 	const handleAreaChange = (e) => setArea(e)
-	const handleCountryChange = (e) => setCountry(e.target.value)
+	const handleFeatureChange = (e) => setFeatures(e)
 
 	const handleSubmit = (e) => {
 		e.preventDefault()
 
-		if (!input || !area || !country) {
+		if (features.length === 0) {
 			setFormError("All fields are required.")
 			return
 		}
@@ -38,8 +47,16 @@ export const Form = () => {
 		console.log("Form submitted successfully")
 	}
 
+	const handleError = (e) => {
+		e.preventDefault()
+		if (!area || features.length === 0) {
+			setFormError("All fields are required.")
+			return
+		}
+	}
+
 	return (
-		<form onSubmit={handleSubmit}>
+		<form onSubmit={handleSubmit} onInvalid={handleError}>
 			<SimpleGrid
 				borderWidth={1}
 				borderColor='#181D18'
@@ -67,37 +84,128 @@ export const Form = () => {
 						<FormErrorMessage>Lawn Area is required.</FormErrorMessage>
 					)}
 				</FormControl>
-				<FormControl isInvalid={!input} isRequired>
+				<FormControl isInvalid={features.length === 0} isRequired>
 					<FormLabel>Lawn features:</FormLabel>
-					<Select
-						placeholder='Select country'
-						onChange={handleCountryChange}
-						borderColor='#181D18'
-					>
-						<option>United Arab Emirates</option>
-						<option>Nigeria</option>
-					</Select>
-					{!input && (
-						<FormErrorMessage>Lawn features is required.</FormErrorMessage>
-					)}
+					<Menu closeOnSelect={false}>
+						<MenuButton
+							as={Button}
+							bg='none'
+							_hover={{ bg: "none" }}
+							_active={{ bg: "none" }}
+							textAlign='left'
+							p={0}
+							px={4}
+							borderWidth={1}
+							borderColor='#181D18'
+							w='full'
+							fontWeight='normal'
+						>
+							<Flex justifyContent='space-between' alignItems='center' w='full'>
+								<Text>
+									{features.length > 0
+										? features.join(", ")
+										: "Select lawn features"}
+								</Text>
+								<Text fontSize={26} color='#181D18'>
+									<ChevronDownIcon />
+								</Text>
+							</Flex>
+						</MenuButton>
+						<MenuList minWidth='240px' bg='#f7fbf2'>
+							<MenuOptionGroup type='checkbox' onChange={handleFeatureChange}>
+								<MenuItemOption
+									_hover={{ bg: "lightgray" }}
+									bg='#f7fbf2'
+									value='email'
+								>
+									Email
+								</MenuItemOption>
+								<MenuItemOption
+									_hover={{ bg: "lightgray" }}
+									bg='#f7fbf2'
+									value='phone'
+								>
+									Phone
+								</MenuItemOption>
+								<MenuItemOption
+									_hover={{ bg: "lightgray" }}
+									bg='#f7fbf2'
+									value='country'
+								>
+									Country
+								</MenuItemOption>
+							</MenuOptionGroup>
+						</MenuList>
+					</Menu>
+					<FormErrorMessage>Lawn features are required.</FormErrorMessage>
 				</FormControl>
 				<FormControl>
 					<FormLabel>Optional features:</FormLabel>
-					<Select
-						placeholder='Select country'
-						onChange={handleCountryChange}
-						borderColor='#181D18'
-					>
-						<option>United Arab Emirates</option>
-						<option>Nigeria</option>
-					</Select>
+					<Menu closeOnSelect={false}>
+						<MenuButton
+							as={Button}
+							bg='none'
+							_hover={{ bg: "none" }}
+							_active={{ bg: "none" }}
+							textAlign='left'
+							p={0}
+							px={4}
+							borderWidth={1}
+							borderColor='#181D18'
+							w='full'
+							fontWeight='normal'
+						>
+							<Flex justifyContent='space-between' alignItems='center' w='full'>
+								<Text>
+									{optional.length > 0
+										? optional.join(", ")
+										: "Select optional features"}
+								</Text>
+								<Text fontSize={26} color='#181D18'>
+									<ChevronDownIcon />
+								</Text>
+							</Flex>
+						</MenuButton>
+						<MenuList minWidth='240px' bg='#f7fbf2'>
+							<MenuOptionGroup type='checkbox' onChange={handleOptionalChange}>
+								<MenuItemOption
+									_hover={{ bg: "lightgray" }}
+									bg='#f7fbf2'
+									value='email'
+								>
+									Email
+								</MenuItemOption>
+								<MenuItemOption
+									_hover={{ bg: "lightgray" }}
+									bg='#f7fbf2'
+									value='phone'
+								>
+									Phone
+								</MenuItemOption>
+								<MenuItemOption
+									_hover={{ bg: "lightgray" }}
+									bg='#f7fbf2'
+									value='country'
+								>
+									Country
+								</MenuItemOption>
+							</MenuOptionGroup>
+						</MenuList>
+					</Menu>
 				</FormControl>
-				<Button type='submit' colorScheme='teal' mt={8} w='fit-content'>
+				<Button
+					type='submit'
+					colorScheme='teal'
+					mt={8}
+					w='fit-content'
+					bg='#39656D'
+					_hover={{ bg: "#5597a3" }}
+				>
 					Submit
 				</Button>
 				<FormControl isInvalid={formError}>
-					<Input type='hidden' onChange={handleInputChange} />
-					<FormErrorMessage textAlign='center' mt={4}>
+					<Input type='hidden' />
+					<FormErrorMessage justifyContent='center' textAlign='right'>
 						{formError}
 					</FormErrorMessage>
 				</FormControl>

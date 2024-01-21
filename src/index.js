@@ -7,6 +7,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import { Dashboard } from "./routes/dashboard"
 import { Upload } from "./routes/upload"
 import { Results } from "./routes/results"
+import { FirebaseProvider } from "./components/FirebaseProvider"
 
 const router = createBrowserRouter([
 	{
@@ -35,9 +36,11 @@ const router = createBrowserRouter([
 
 const root = ReactDOM.createRoot(document.getElementById("root"))
 root.render(
-	<ChakraProvider>
-		<React.StrictMode>
-			<RouterProvider router={router} />
-		</React.StrictMode>
-	</ChakraProvider>
+	<FirebaseProvider>
+		<ChakraProvider>
+			<React.StrictMode>
+				<RouterProvider router={router} />
+			</React.StrictMode>
+		</ChakraProvider>
+	</FirebaseProvider>
 )
