@@ -7,10 +7,17 @@ import {
 	Image,
 	HStack,
 } from "@chakra-ui/react"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useContext } from "react"
+import { useParams } from "react-router-dom"
+import { FirebaseContext } from "../components/FirebaseProvider"
+import { getDownloadURL, ref } from "firebase/storage"
 
 export const Results = () => {
 	const [loadingText, setLoadingText] = useState("Loading")
+	const [downloadURL, setDownloadURL] = useState("")
+	const { myStorage } = useContext(FirebaseContext)
+	const { url } = useParams()
+	console.log(url)
 
 	useEffect(() => {
 		const intervalId = setInterval(() => {
@@ -23,15 +30,23 @@ export const Results = () => {
 			})
 		}, 500)
 
+		const loader = async (myStorage, url) => {
+			const downloadURL = await getDownloadURL(ref(myStorage, url + "updated"))
+			console.log(downloadURL)
+			setDownloadURL(downloadURL)
+		}
+
+		loader(myStorage, url)
+
 		// Clean up the interval when the component is unmounted
 		return () => clearInterval(intervalId)
-	}, [])
+	}, [myStorage, url])
 	return (
 		<Box m={4} maxW='4xl'>
 			<Stack gap={6}>
 				<Heading size='3xl'>Results</Heading>
 				<Image
-					src='https://bit.ly/dan-abramov'
+					src={downloadURL}
 					rounded={10}
 					w='100%'
 					objectFit='cover'

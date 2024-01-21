@@ -22,6 +22,7 @@ import { useState, useContext } from "react"
 import { ref, getDownloadURL, uploadBytes } from "firebase/storage"
 import { ChevronDownIcon } from "@chakra-ui/icons"
 import { FirebaseContext } from "./FirebaseProvider"
+import axios from "axios"
 
 export const Form = ({ file }) => {
 	const [area, setArea] = useState(1)
@@ -38,7 +39,6 @@ export const Form = ({ file }) => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault()
-		console.log(file)
 
 		if (features.length === 0 || !area || !file) {
 			setFormError("All fields are required.")
@@ -46,12 +46,40 @@ export const Form = ({ file }) => {
 		}
 
 		setFormError("")
-		console.log(myStorage)
-		const imageRef = ref(myStorage, file.name)
+		let imageRef = ref(myStorage, "images/" + file.name)
 		try {
 			await uploadBytes(imageRef, file)
-			const url = await getDownloadURL(imageRef)
-			console.log(url)
+
+			let form_data = new FormData()
+			form_data.append("image", file, file.name)
+
+			const url = "http://127.0.0.1:8000/app/"
+			const response = await axios.post(url, form_data, {
+				headers: {
+					"content-type": "multipart/form-data",
+				},
+			})
+
+			if (response.status === 200) {
+				// Assuming response.data is a base64-encoded image data
+				const base64ImageData = response.data
+
+				// Convert base64 to data URL
+				const dataURL = `data:image/jpg;base64,${base64ImageData}`
+
+				// Convert data URL to File object
+				const convertedFile = dataURLtoFile(dataURL, file.name + "updated")
+
+				// Upload converted file to Firebase Storage
+				imageRef = ref(myStorage, "updated/" + convertedFile.name)
+				await uploadBytes(imageRef, convertedFile)
+
+				// Get download URL
+				const downloadURL = await getDownloadURL(imageRef)
+			} else {
+				// Handle errors
+				console.error("Error sending data:", response)
+			}
 		} catch (e) {
 			console.log(e)
 		}
@@ -222,4 +250,26 @@ export const Form = ({ file }) => {
 			</SimpleGrid>
 		</form>
 	)
+}
+
+function dataURLtoFile(dataURL, fileName) {
+	// Extract base64 data
+	const base64Data = dataURL.split(",")[1]
+
+	// Decode base64 data to binary
+	const binaryData = atob(base64Data)
+
+	// Create a Uint8Array from binary data
+	const uint8Array = new Uint8Array(binaryData.length)
+	for (let i = 0; i < binaryData.length; i++) {
+		uint8Array[i] = binaryData.charCodeAt(i)
+	}
+
+	// Create a Blob from Uint8Array
+	const blob = new Blob([uint8Array], { type: "image/png" })
+
+	// Create a File from the Blob
+	const file = new File([blob], fileName, { type: "image/png" })
+
+	return file
 }
