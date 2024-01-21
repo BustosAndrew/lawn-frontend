@@ -23,6 +23,7 @@ import { ref, getDownloadURL, uploadBytes } from "firebase/storage"
 import { ChevronDownIcon } from "@chakra-ui/icons"
 import { FirebaseContext } from "./FirebaseProvider"
 import axios from "axios"
+import { useNavigate } from "react-router-dom"
 
 export const Form = ({ file }) => {
 	const [area, setArea] = useState(1)
@@ -30,6 +31,7 @@ export const Form = ({ file }) => {
 	const [optional, setOptional] = useState([])
 	const [formError, setFormError] = useState("")
 	const { myStorage } = useContext(FirebaseContext)
+	const navigate = useNavigate()
 
 	const handleOptionalChange = (e) => {
 		setOptional(e)
@@ -74,8 +76,7 @@ export const Form = ({ file }) => {
 				imageRef = ref(myStorage, "updated/" + convertedFile.name)
 				await uploadBytes(imageRef, convertedFile)
 
-				// Get download URL
-				const downloadURL = await getDownloadURL(imageRef)
+				navigate("/results/" + convertedFile.name)
 			} else {
 				// Handle errors
 				console.error("Error sending data:", response)
