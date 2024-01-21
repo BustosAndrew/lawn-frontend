@@ -18,6 +18,45 @@ export const Results = () => {
 	const { myStorage } = useContext(FirebaseContext)
 	const { name } = useParams()
 
+	function calculateWaterBillSavings(yardArea) {
+		const waterUsagePerSqFtPerYear = 0.623 // Gallons of water per square foot per year for lawn irrigation
+		const waterCostPerGallon = 0.002 // Average cost per gallon of water (this can vary based on your location)
+
+		// Calculate annual water usage for lawn irrigation
+		const annualWaterUsage = yardArea * waterUsagePerSqFtPerYear
+
+		// Calculate annual cost of water for lawn irrigation
+		const annualWaterCost = annualWaterUsage * waterCostPerGallon
+
+		return annualWaterCost
+	}
+
+	function calculateTurfCost(yardArea) {
+		const avgTurfCostPerSqFt = 1.82
+		const avgGravelCostPerSqFt = 0.21
+		const taxRate = 0.07
+		const shapeFactor = 1.15 // 15% additional area
+
+		// Calculate the total area including shape factor
+		const totalArea = yardArea * shapeFactor
+
+		// Calculate the cost of turf and gravel
+		const turfCost = totalArea * avgTurfCostPerSqFt
+		const gravelCost = totalArea * avgGravelCostPerSqFt
+
+		// Calculate the tax for turf
+		const tax = turfCost * taxRate
+
+		// Calculate total cost
+		const totalCost = turfCost + tax + gravelCost
+
+		return totalCost
+	}
+
+	function calculateBreakEvenYears(initialCost, annualSavings) {
+		return initialCost / annualSavings
+	}
+
 	useEffect(() => {
 		const intervalId = setInterval(() => {
 			setLoadingText((prevText) => {
@@ -52,7 +91,11 @@ export const Results = () => {
 					shadow='lg'
 				/>
 				<Heading size='lg'>Details</Heading>
-				<Text fontWeight='bold'>{loadingText}</Text>
+				<Text fontWeight='bold'>Your water bill savings is $20 per year.</Text>
+				<Text fontWeight='bold'>
+					{"Your turf cost is $" + calculateTurfCost(1).toFixed(2) + "."}
+				</Text>
+				<Text fontWeight='bold'>You will break even in 10 years.</Text>
 				{/* <Heading size='lg'>Local Landscapings Guidelines</Heading>
 				<Text fontWeight='bold'>{loadingText}</Text> */}
 				<HStack gap={2} mx='auto'>
