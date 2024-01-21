@@ -76,7 +76,7 @@ export const Form = ({ file }) => {
 				imageRef = ref(myStorage, "updated/" + convertedFile.name)
 				await uploadBytes(imageRef, convertedFile)
 
-				navigate("/results/" + convertedFile.name)
+				navigate("/results/" + file.name)
 			} else {
 				// Handle errors
 				console.error("Error sending data:", response)
